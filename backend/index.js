@@ -22,6 +22,8 @@ var app = express();
 
 var api = require('./routes/api.js');
 
+
+
 app.use(cors());
 
 app.use(bodyParser.json());
@@ -31,5 +33,9 @@ app.use(upload.array());
 // require("./routes.js");
 
 app.use("/api", api);
+
+
+
+
 
 app.listen(3000);

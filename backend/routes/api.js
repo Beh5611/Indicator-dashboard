@@ -11,6 +11,14 @@ if (typeof globalThis === 'undefined') {
   }
 }
 
+const mongoose = require('mongoose')
+//connect to mongodb
+
+const dbURI = 'mongodb+srv://udcpreloaded:otOjcjIZA3BZssJR@udc-predata.fjsurh9.mongodb.net/PreloadedData?retryWrites=true&w=majority'
+mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
+  .then((result) => console.log('connected to db'))
+  .catch((err) => console.log(err))
+
 var express = require('express');
 var router = express.Router();
 
