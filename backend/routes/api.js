@@ -19,6 +19,8 @@ mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
   .then((result) => console.log('connected to db'))
   .catch((err) => console.log(err))
 
+
+
 var express = require('express');
 var router = express.Router();
 
@@ -708,6 +710,32 @@ router.post("/6", async (req, res) => {
         res.status(500).send('Oops, error!');
       });
     }
+  }
+});
+
+
+// Return the data that will be preloaded into the dashboard main page.
+// The data is stored in a mdb server. It will be retrieved in this API using mongoose.
+const { MongoClient } = require('mongodb');
+
+const uri = 'mongodb+srv://udcpreloaded:otOjcjIZA3BZssJR@udc-predata.fjsurh9.mongodb.net/PreloadedData?retryWrites=true&w=majority';
+
+router.get('/7', async (req, res) => {
+  try {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    await client.connect();
+
+    const database = client.db('PreloadedData');
+    const collection = database.collection('Cities');
+
+    const documents = await collection.find().toArray();
+
+    res.status(200).json({ success: true, data: documents });
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  } finally {
+    client.close(); // Close the MongoDB connection
   }
 });
 
