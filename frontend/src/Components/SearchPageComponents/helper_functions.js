@@ -36,7 +36,7 @@ export const fetchAdministration = async (
           ...prevAdminURLs,
           [adminName]: URL,
         }));
-
+        console.log("admin fetch", response);
         setAdmin((prevAdmin) => [...prevAdmin, adminName]);
       });
     } catch (error) {
@@ -322,7 +322,7 @@ export const handleGenerateVisualization = async (
     }
 
     setIndicatorData({});
-
+    console.log('testing currentadmininstances', currentAdminInstances);
     try {
       await Promise.all(
         Object.keys(selectedIndicators).map(async (index) => {

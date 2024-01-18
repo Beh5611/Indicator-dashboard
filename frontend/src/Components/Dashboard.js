@@ -54,7 +54,7 @@ import { Sheet as JoySheet } from "@mui/joy";
 import { Box as JoyBox } from "@mui/joy";
 
 import CloseIcon from "@mui/icons-material/Close";
-
+import axios from "axios";
 import { NewDropdown, NewDropdownStateValue } from "./SearchPageComponents/NewDropdown";
 import { NewDropdownMultiSelect } from "./SearchPageComponents/NewDropdownMultiSelect";
 import { NumberInput } from "./SearchPageComponents/NumberInput";
@@ -117,7 +117,7 @@ function Dashboard() {
 
   const [visLoading, setVisLoading] = useState(false);
   const [cityLoading, setCityLoading] = useState(false);
-
+ 
   // Colour wheel for the visualizations
   const colors = [
     "#8884d8",
@@ -136,8 +136,57 @@ function Dashboard() {
 
   // This useEffect is for testing and developement purposes
   useEffect(() => {
-    console.log("testing", currentAreaNames);
-  }, [currentAreaNames]);
+    /////////////////////////////////////////////////////////////////////////CURR TESTING THIS////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Finds and formats the data that needs to be pre-loaded
+    const testingdatarecieved = async () => {
+      const indicators = await axios.post("http://localhost:3000/api/1", {
+        cityName: "http://ontology.eil.utoronto.ca/Toronto/Toronto#toronto",
+      });
+      console.log("all indicators", indicators.data.indicatorNames);
+
+      const allAdminInstances = await axios.post("http://localhost:3000/api/6", {
+        cityName: "http://ontology.eil.utoronto.ca/Toronto/Toronto#toronto",
+        adminType: "http://ontology.eil.utoronto.ca/Toronto/Toronto#Neighbourhood",
+      });
+      
+      
+      const adminAreaInstanceArray =  allAdminInstances.data["adminAreaInstanceNames"].map((item) => item.adminAreaInstance);
+      console.log("all admin instances", adminAreaInstanceArray);
+      
+      const response = await axios.post("http://localhost:3000/api/4", {
+              cityName: "http://ontology.eil.utoronto.ca/Toronto/Toronto#toronto",
+              adminType: "http://ontology.eil.utoronto.ca/Toronto/Toronto#Neighbourhood",
+              adminInstance: adminAreaInstanceArray,
+              indicatorName: "http://ontology.eil.utoronto.ca/CKGN/Crime#TheftOverCrime2016",
+              startTime: 2016,
+              endTime: 2024,
+            });
+
+            console.log(
+              "final data testing",
+              response.data["indicatorDataValues"]
+            );
+            const data = response.data["indicatorDataValues"];
+            const yearSums = {};
+            Object.keys(data).forEach((key) => {
+              // Iterate over each year in the inner object
+              Object.keys(data[key]).forEach((year) => {
+                // Add the value to the sum, creating the sum if it doesn't exist
+                yearSums[year] = (yearSums[year] || 0) + data[key][year];
+              });
+            });
+            console.log('year sums', yearSums);
+
+      }
+      
+      testingdatarecieved();
+  }, []);
 
   useEffect(() => {
     // Also checks if number of keys in indicatorData is equal to length of selectedIndicators - will indicate if completely done previous step
