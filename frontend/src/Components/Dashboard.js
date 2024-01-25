@@ -184,8 +184,12 @@ function Dashboard() {
             console.log('year sums', yearSums);
 
       }
+      const testingmongodb = async () => {
+        const response = await axios.post("http://localhost:3000/api/6")
+      }
       
       testingdatarecieved();
+      testingmongodb();
   }, []);
 
   useEffect(() => {
